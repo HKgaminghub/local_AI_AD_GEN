@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | AI Video Studio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-yellow: #FFD700;
+            --dark-bg: #0a0a0a;
+            --panel-bg: #141414;
+            --border-color: #333;
+            --glow-yellow: rgba(255, 215, 0, 0.3);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        h1,
+        h2,
+        h3,
+        .brand-font {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-yellow);
+            text-transform: uppercase;
+        }
+
+        .text-yellow {
+            color: var(--primary-yellow) !important;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .leaderboard-table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .leaderboard-table tr {
+            background-color: #1a1a1a;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .leaderboard-table tr:hover {
+            transform: scale(1.01);
+            background-color: #222;
+            box-shadow: 0 0 15px var(--glow-yellow);
+        }
+
+        .leaderboard-table td,
+        .leaderboard-table th {
+            border: none;
+            padding: 1.5rem;
+            vertical-align: middle;
+        }
+
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            background: #333;
+            color: #fff;
+        }
+
+        .rank-1 .rank-badge {
+            background: linear-gradient(45deg, #ffd700, #b8860b);
+            color: #000;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .rank-2 .rank-badge {
+            background: linear-gradient(45deg, #c0c0c0, #708090);
+            color: #000;
+        }
+
+        .rank-3 .rank-badge {
+            background: linear-gradient(45deg, #cd7f32, #8b4513);
+            color: #000;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: #222;
+            border: 1px solid var(--primary-yellow);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-yellow);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .nav-link {
+            color: var(--primary-yellow);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <header class="mb-5 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-5 fw-bold mb-0">CREATOR LEADERBOARD</h1>
+                <p class="text-muted text-uppercase small" style="letter-spacing: 2px;">Elite AI Video Rankings</p>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <a href="/" class="nav-link"><- BACK TO STUDIO</a>
+                        {% if user %}
+                        <div class="text-end">
+                            <div class="brand-font fs-6">{{ user.username }}</div>
+                            <div class="text-muted small">YOUR SCORE: <span class="text-yellow">{{ user.video_count
+                                    }}</span></div>
+                        </div>
+                        {% endif %}
+            </div>
+        </header>
+
+        <div class="card p-4">
+            <div class="table-responsive">
+                <table class="table leaderboard-table text-white mb-0">
+                    <thead>
+                        <tr style="background: transparent;">
+                            <th width="10%">RANK</th>
+                            <th width="60%">CREATOR</th>
+                            <th width="30%" class="text-end">VIDEOS GENERATED</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard %}
+                        <tr class="rank-{{ loop.index }}">
+                            <td>
+                                <div class="rank-badge">{{ loop.index }}</div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="user-avatar text-uppercase">
+                                        {{ entry.username[0] }}
+                                    </div>
+                                    <div>
+                                        <div class="brand-font fs-5">{{ entry.username }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <span class="display-6 fw-bold text-yellow">{{ entry.video_count }}</span>
+                                <span class="text-muted small d-block">PRODUCTIONS</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer class="mt-5 text-center text-muted small">
+            <p>RANKINGS ARE CALCULATED BASED ON SUCCESSFUL VIDEO PIPELINE COMPLETIONS</p>
+            <p class="opacity-50">ALGORITHM: SELECTION SORT (O(n²)) | DATABASE: MONGODB</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
